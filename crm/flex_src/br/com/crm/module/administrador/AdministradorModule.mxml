@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="100%" height="100%"
+		  creationComplete="creationComplete(event)"
+		  xmlns:swiz="http://swiz.swizframework.org"
+		  xmlns:view="br.com.crm.module.administrador.view.*">
+	<fx:Declarations>
+		
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<swiz:Swiz beanProviders="{[br.com.crm.module.administrador.config.Beans]}">
+			<swiz:config>
+				<swiz:SwizConfig setUpEventType="creationComplete"
+								 setUpEventPhase="{ EventPhase.CAPTURING_PHASE } "
+								 setUpEventPriority="50"
+								 tearDownEventType="{ Event.REMOVED_FROM_STAGE }"
+								 tearDownEventPhase="{ EventPhase.CAPTURING_PHASE }"
+								 tearDownEventPriority="50"
+								 strict="true"
+								 viewPackages="br.com.crm.view.module.administrador.view.*,"
+								 eventPackages="br.com.crm.event.*,br.com.crm.module.administrador.event.*"
+								 defaultFaultHandler="onFault"
+								 defaultDispatcher="dispatcher" />
+			</swiz:config>
+		</swiz:Swiz>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import br.com.crm.module.administrador.config.Beans;
+			
+			import mx.controls.Alert;
+			import mx.rpc.events.FaultEvent;
+			
+			/**
+			 * Trata mensagens de erro ocorrida no Swiz. 
+			 * @param event Evento de Erro.
+			 * 
+			 * @author silvano.dantas
+			 * 
+			 */
+			private function onFault(event:FaultEvent):void{
+				Alert.show( event.fault.message, "Error" );
+			}
+		]]>
+	</fx:Script>
+	<fx:Script source="AdministradorModuleAction.as"/>
+	<mx:VBox width="100%" height="100%" >
+		<mx:ApplicationControlBar width="100%" height="43">
+			<s:ComboBox/>
+		</mx:ApplicationControlBar>
+		<mx:ViewStack id="vstkMenu" x="69" y="263" width="100%" height="100%">
+			<view:MenuView/>
+		</mx:ViewStack>
+		
+	</mx:VBox>
+</s:Module>

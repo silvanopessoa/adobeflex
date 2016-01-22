@@ -1,0 +1,30 @@
+Ciclo de Vida de Entidades de Persistentes no JPA
+
+NEW
+- Instância - Não associada ao EntityManager
+- Instância - Não possui atributo com identificador
+Exemplo: Obtendo uma nova instância como pelo construtor.
+ 
+MANAGED
+- Instância - Associada ao EntityManager
+- Instância - Possui atributo com identificador
+- Vantagem - Garante o sincronismo com o repositorio de dados(Banco) ao final da transação ou após o flush.
+Exemplo: - Obtendo uma intância atravês de queries.
+- Obtendo atraves dos metodos do EntityManager(find, getReference)
+* flush - descarrega no banco de dados todas instrucoes sql mais a transacao não é concluida.
+* getReference -
+
+DETACHED
+- Instância - Não associada ao EntityManager
+- Instância - Possui atributo com identificador
+
+
+REMOVED
+- Instância - Associada ao EntityManager
+- Instância - Possui atributo com identificador
+- Instância - Marcada para sofrer operação de remoção.
+Exemplo: Atravês do método remove do EntityManager.
+
+*** MERGE ***
+Cria uma cópia ou atualiza o valor da entidade no cache e prepara uma operação SQL UPDATE no banco de daos.
+- Muda do estado DETACHED para MANAGED

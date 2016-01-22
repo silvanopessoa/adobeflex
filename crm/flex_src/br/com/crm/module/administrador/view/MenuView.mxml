@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%">
+
+	<!-- SCRIPT -->
+	<fx:Script source="action/MenuViewAction.as"/>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<mx:LinkButton x="10" y="51" width="128" height="150" label="Logradouro" visible="{Authorities.ROLE_ADMIN}"
+				   icon="@Embed('../assets/icons/pais.png')" labelPlacement="bottom" click="{model.newBtnClick(event)}"/>
+	<mx:LinkButton x="160" y="51" width="128" height="150" label=" Sistema" visible="{Authorities.ROLE_ADMIN}"
+				   icon="@Embed('../assets/icons/system.png')" labelPlacement="bottom"/>
+</mx:Canvas>

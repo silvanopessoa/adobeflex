@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:flex="http://www.springframework.org/schema/flex"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:cache="http://www.springframework.org/schema/cache"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/flex
+        http://www.springframework.org/schema/flex/spring-flex-1.5.xsd
+        http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/cache
+		http://www.springframework.org/schema/cache/spring-cache.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+<!-- ======================================================================================== -->
+    <!-- ============================ CONFIGURACAO DO CACHE ===================================== -->
+    <!-- ======================================================================================== -->
+    <cache:annotation-driven />
+ 
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager" p:cache-manager-ref="ehcache"/>
+ 
+    <!-- Ehcache library setup -->
+    <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" p:config-location="classpath:br/com/crm/service/impl/ehcache.xml"/>
+    
+	<!-- ======================================================================================== -->
+    <!-- ======================================== SESSSION ====================================== -->
+    <!-- ======================================================================================== -->
+	<bean id="sessionTemplate" class="br.com.crm.session.impl.SessionTemplate"/>
+	
+	<!-- ======================================================================================== -->
+    <!-- ==================== CANAL DE COMUNICACAO REMOTING/SECURED ============================= -->
+    <!-- ======================================================================================== -->
+    <!-- Canal de comunicacao por Remoting -->
+<!-- 	<flex:message-broker> -->
+<!-- 		<flex:remoting-service default-channels="my-amf" /> -->
+<!-- 		<flex:secured /> -->
+<!-- 	</flex:message-broker> -->
+	
+	<!-- ======================================================================================== -->
+    <!-- ============================= TRATAMENTO EXCEPTION ===================================== -->
+    <!-- ======================================================================================== -->
+<!--     <flex:message-broker> -->
+<!--         <flex:exception-translator ref="exceptionApplication"/> -->
+<!--     </flex:message-broker> -->
+ 
+<!--     Bean responsável pelo tratamento de exceptions para o flex -->
+<!--     <bean name="exceptionApplication" class="br.com.crm.exception.flex.ExceptionApplication"/> -->
+    
+    <!-- ======================================================================================== -->
+    <!-- ================================== RESOURCE BUNDLE ===================================== -->
+    <!-- ======================================================================================== -->
+    <bean id="messageSource"
+        class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>exceptions</value>
+            </list>
+        </property>
+    </bean>
+    
+ 	<!-- ======================================================================================== -->
+ 	<!-- ========================= CONFIGURACAO DO HIBERNATE E SESSAO =========================== -->
+ 	<!-- ======================================================================================== -->
+
+	<!-- Entity Manager Factory -->
+<!-- 	<context:load-time-weaver/> -->
+	<bean id="entityManagerFactory"	class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="mappingResources">
+			<list>
+	        	<value>br/com/crm/hibernate/mapping/resources/HQLPais.hbm.xml</value>
+				<value>br/com/crm/hibernate/mapping/resources/HQLCidade.hbm.xml</value>
+	        </list>
+        </property>
+		<property name="loadTimeWeaver">
+			<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
+		</property>
+		<property name="persistenceProviderClass" value="org.hibernate.ejb.HibernatePersistence" />
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+				<prop key="hibernate.connection.url">jdbc:oracle:thin:@localhost:1521:xe</prop>
+				<prop key="hibernate.connection.username">crm</prop>
+				<prop key="hibernate.connection.password">crm</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="connection.pool_size">3</prop>
+				<prop key="current_session_context_class">thread</prop>
+				<prop key="hibernate.c3p0.max_size">10</prop>
+				<prop key="hibernate.c3p0.min_size">2</prop>
+				<prop key="hibernate.c3p0.timeout">60</prop>
+				<prop key="hibernate.c3p0.max_statements">10</prop>
+				<prop key="hibernate.c3p0.idle_test_period">3000</prop>
+				<prop key="hibernate.c3p0.acquire_increment">2</prop>
+			</props>
+		</property>
+		<property name="packagesToScan" value="br.com.crm.model.entity" />
+	</bean>
+	 
+	<!-- ======================================================================================== -->
+ 	<!-- ========================= GERENCIAMENTO DE TRANSACAO =================================== -->
+ 	<!-- ======================================================================================== -->
+	<!-- CONFIGURACAO DE GERENCIAMENTO DE TRANSACAO -->
+ 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+	
+	<!-- Transaction Manager JPA -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory">
+		
+		</property> 
+	</bean>
+ 	
+ 	<!-- Ativa varias anotacoes para detectar as classes bean
+ 		Spring's @Required e @Autowired, JSR250 @Resource.-->
+ 	<context:annotation-config/>
+
+ 	<!-- ======================================================================================== -->
+ 	<!-- ============================= CARREGA OS BEANS POR PACKAGE ============================= -->
+ 	<!-- ======================================================================================== -->
+ 	<!-- BEANS SERVICE -->
+    <context:component-scan base-package="br.com.crm.service.impl"/>
+
+    <!-- BEANS DAO  -->
+    <context:component-scan base-package="br.com.crm.dao.impl"/>
+    
+    <!-- ======================================================================================== -->
+ 	<!-- ================================= JDBC TEMPLATE ======================================== -->
+ 	<!-- ======================================================================================== -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+        <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe" />
+        <property name="username" value="crm"/>
+        <property name="password" value="crm"/>
+    </bean>
+ 
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    
+    <!-- ======================================================================================== -->
+ 	<!-- =================================== COMENTATIOS ======================================== -->
+ 	<!-- ======================================================================================== -->
+<!-- <list> -->
+<!-- <value>br/com/crm/hibernate/mapping/resources/HQLPais.hbm.xml</value> -->
+<!-- </list> -->
+
+<!-- <property name="mappingResources"> -->
+<!-- 	<value>classpath*:br/com/crm/hibernate/mapping/resources/*.hbm.xml</value> -->
+<!--  </property> -->
+
+</beans>

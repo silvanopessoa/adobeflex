@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:textinput="br.com.crm.component.textinput.*"
+		 width="400" height="300" creationComplete="creationCompleteHandler(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.controls.ProgressBar;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.messaging.ChannelSet;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+	
+			import spark.components.TitleWindow;
+			
+//			[Bindable]
+//			public var remotingChannels:ChannelSet;
+			
+			private var progressBar:ProgressBar;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+//				usuarioService.list();
+			}
+			
+//			protected function usuarioView_usuarioCreateEventHandler(event:UsuarioEvent):void
+//			{
+//				usuarioService.create(event.usuario);
+//				showProgressBar();
+//			}
+			
+//			protected function usuarioView_usuarioUpdateEventHandler(event:UsuarioEvent):void
+//			{
+//				usuarioService.update(event.usuario);
+//				showProgressBar();
+//			}
+			
+			//private function showForm(inscricao:InscricaoModel = null):void 
+			private function showForm():void 
+			{
+//				var form:UsuarioForm = PopUpManager.createPopUp(this, UsuarioForm, true) as UsuarioForm;
+//				form.remotingChannels = remotingChannels;
+//				form.usuario = usuario != null ? usuario : new Usuario();
+//				form.addEventListener(UsuarioEvent.CREATE, usuarioView_usuarioCreateEventHandler);
+//				form.addEventListener(UsuarioEvent.UPDATE, usuarioView_usuarioUpdateEventHandler);
+//				PopUpManager.centerPopUp(form);
+			}
+			
+			private function showProgressBar():void {
+				progressBar = PopUpManager.createPopUp(this, ProgressBar, true) as ProgressBar;
+				progressBar.indeterminate = true;
+				progressBar.mode="manual";
+				PopUpManager.centerPopUp(progressBar);
+			}
+			
+			private function closeProgressBar():void {
+//				PopUpManager.removePopUp(progressBar);
+			}
+			
+			protected function usuarioService_createResultHandler(event:ResultEvent):void
+			{
+//				var createdUsuario:Usuario = event.result as Usuario;
+//				var people:ArrayCollection = usuarioGrid.dataProvider as ArrayCollection;
+//				people.addItem(createdUsuario);
+//				closeProgressBar();
+			}
+			
+			protected function usuarioService_updateResultHandler(event:ResultEvent):void
+			{
+//				var updatedUsuario:Usuario = event.result as Usuario;
+//				var people:ArrayCollection = usuarioGrid.dataProvider as ArrayCollection;
+//				for (var i:int=0; i<people.length; i++) {
+//					var usuario:Usuario = people.getItemAt(i) as Usuario;
+//					if (usuario.id == updatedUsuario.id) {
+//						people.removeItemAt(i);
+//						people.addItemAt(updatedUsuario, i);
+//					}
+//				}
+//				closeProgressBar();
+			}
+			
+			protected function usuarioService_removeResultHandler(event:ResultEvent):void
+			{
+//				var people:ArrayCollection = usuarioGrid.dataProvider as ArrayCollection;
+//				people.removeItemAt(usuarioGrid.selectedIndex);
+//				closeProgressBar();
+			}
+			
+			protected function usuarioService_faultHandler(event:FaultEvent):void
+			{
+//				closeProgressBar();
+//				Alert.show(event.fault.faultString, "Remote Operation Failed");
+			}
+			
+			protected function editInscricaoBtn_clickHandler(event:MouseEvent):void
+			{
+//				if (usuarioGrid.selectedIndex > -1) {
+//					var selectedUsuario:Usuario = usuarioGrid.selectedItem as Usuario;
+//					showForm(selectedUsuario);
+//				}
+			}
+			
+			protected function deleteInscricaoBtn_clickHandler(event:MouseEvent):void
+			{
+//				if (usuarioGrid.selectedIndex > -1) {
+//					var selectedUsuario:Usuario = usuarioGrid.selectedItem as Usuario;
+//					showProgressBar();
+//					usuarioService.remove(selectedUsuario.id);
+//				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	
+	<mx:DataGrid dataProvider="" height="80%" id="inscricaoGrid" width="80%">
+		<mx:columns>
+			<mx:DataGridColumn dataField="nome" headerText="Aluno" id="alunoColumn"/>
+			<mx:DataGridColumn dataField="senha" headerText="Serie" id="serieColumn"/>
+		</mx:columns>
+	</mx:DataGrid>
+	<s:Group>
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+		<s:Button click="showForm();" id="newInscricaoBtn" label="Nova Inscrição"/>
+		<s:Button click="editInscricaoBtn_clickHandler(event)" id="editInscricaoBtn" label="Editar"/>
+		<s:Button click="deleteInscricaoBtn_clickHandler(event)" id="deleteInscricaoBtn" label="Deletar"/>
+	</s:Group>
+</s:Group>
